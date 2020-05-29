@@ -1,0 +1,198 @@
+/* ---------------  Font imports  ------------------ */
+@font-face {
+    font-family: 'Circular-Black';
+    src: url('../fonts/Circular-Black.otf');
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    src: url('../fonts/Inconsolata-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Inconsolata-Bold';
+    src: url('../fonts/Inconsolata-Bold.ttf');
+}
+
+/* ---------------  Styling foundational page elements  ------------------ */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    min-width: 100%;
+    display: block;
+    font-family: 'Inconsolata';
+}
+
+.wrapper {
+    min-height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
+.confetti {
+    min-height: 100%;
+    width: 100%;
+    background: url('../img/confetti.svg') repeat center;
+    z-index: -1;
+    opacity: 0.15;
+    position: absolute;
+    top: 0;
+}
+
+.container {
+    width: 80%;
+    text-align: center;
+    margin: 0 auto;
+    animation: fadein 2s;
+    -moz-animation: fadein 2s;
+    -webkit-animation: fadein 2s;
+}
+
+.queries {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    margin-top: 150px;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Circular-Black';
+    font-size: 50px;
+    color: #ff815e;
+}
+
+
+/* ---------------  Styling input elements ------------------ */
+form {
+    width: 60%;
+}
+
+input[type=text] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 8px 15px !important;
+    border-radius: 2px;
+    border:solid 1px #ff815e;
+    background: none;
+    box-shadow: 2px 4px 4px rgba(179, 144, 240, 0.4);
+
+    color: #478eff;
+    font-family: 'Inconsolata';
+    display: inline-block;
+}
+
+.actor-one {
+    float: left;
+}
+
+.actor-two {
+    float: right;
+}
+
+input[type=text]:focus {
+    outline: none;
+}
+
+input[type=submit] {
+    margin-top: 10px;
+    margin-bottom: 55px;
+    padding:8px 15px;
+    background: #ff815e;
+    border:none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+
+    color: white;
+    font-size: 18px;
+    font-family: "Inconsolata";
+}
+
+input[type=submit]:hover {
+    color: #cbff52;
+}
+
+input[type=submit]:active, input[type=submit]:focus {
+    outline: none;
+}
+
+
+.header img {
+    margin-top: 0px;
+    z-index: 0;
+    position: absolute;
+    right: 0;
+    top: -70px;
+}
+
+.error-mssg {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 16px;
+    color: #F8D64E;
+}
+
+/* ---------------  Styling links ------------------ */
+a {
+    color: #ff815e;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #478eff;
+    text-decoration: underline;
+}
+
+/* ---------------- Actor/Movie page css ----------------- */
+.actor-name h1 {
+    color: #3F3F3F;
+    display: inline-block;
+    border-bottom: 8px solid #ff815e;
+    margin-bottom: 30px;
+    font-size: 40px;
+}
+
+li {
+    padding-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    list-style: none;
+}
+
+li::before {
+    color: #ff815e;
+    /* color of bullet or square */
+    content: "■ ";
+}
+
+.films {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+}
+
+ul {
+    display: inline-block;
+    margin: 0 auto;
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.search {
+    font-size: 18px;
+}
+
+.explanation {
+    margin: 0px auto;
+    text-align: center;
+    width: 60%;
+    font-family : 'Inconsolata';
+}
+
+.output {
+    text-align: left;
+}

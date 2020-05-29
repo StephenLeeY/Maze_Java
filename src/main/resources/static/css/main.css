@@ -1,0 +1,161 @@
+@font-face {
+    font-family: 'Circular-Black';
+    src: url('../fonts/Circular-Black.otf');
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    src: url('../fonts/Inconsolata-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Inconsolata-Bold';
+    src: url('../fonts/Inconsolata-Bold.ttf');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    min-width: 100%;
+    display: block;
+    background: linear-gradient(180deg, #000000 0%, rgba(44, 44, 44, 0.15) 39.06%,
+    rgba(232, 232, 232, 0) 71.87%, rgba(255, 255, 255, 0) 100%), #002762;
+    color: #0CD3FF;
+    font-family: 'Inconsolata';
+}
+
+
+h1 {
+    font-family: 'Circular-Black';
+    font-size: 50px;
+    color: #F8D64E;
+}
+
+.container {
+    width: 80%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.queries {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    margin-top: 180px;
+}
+
+.neighbors-query {
+    width: 45%;
+}
+
+.radius-query {
+    width: 45%;
+}
+
+
+/* STYLING INPUTS */
+input[type=text] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 8px 15px !important;
+    border-radius: 2px;
+    border:solid 1px #0CD3FF;
+    background: none;
+    box-shadow: 2px 4px 4px rgba(179, 144, 240, 0.4);
+
+    color: #F8D64E;
+    font-family: 'Inconsolata';
+    display: inline-block;
+
+}
+
+input[type=text]:focus {
+    outline: none;
+}
+
+input[type=submit] {
+    margin-top: 10px;
+    margin-bottom: 55px;
+    padding:5px 15px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+
+    color: #0CD3FF;
+    font-size: 17px;
+    font-family: "Inconsolata";
+}
+
+input[type=submit]:hover {
+    color: #F8D64E;
+}
+
+input[type=submit]:active, input[type=submit]:focus {
+    outline: none;
+}
+
+
+/* TABLE CSS */
+table {
+    width: 100%;
+    font-size: 15px;
+    border-collapse: collapse;
+    text-align: center;
+    color: #bae7ff;
+    margin-bottom: 70px;
+}
+
+/*tr:nth-child(odd) {*/
+/*    background: rgba(102, 186, 247, 0.3);*/
+/*}*/
+
+th {
+    background: rgba(0, 148, 255, 0.3);
+    padding: 5px;
+    font-family: 'Inconsolata-Bold';
+    color: white;
+}
+
+td {
+    padding: 5px;
+}
+
+table, th, td {
+    border: 1px solid #0CD3FF;
+}
+
+.header img {
+    margin-top: 0px;
+    z-index: 0;
+    position: absolute;
+    right: 0;
+    top: -70px;
+}
+
+
+
+.error-mssg {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 16px;
+    color: #F8D64E;
+}
+
+.instructions p {
+    margin: 0px;
+}
+
+.instructions {
+    margin-bottom: 20px;
+}
+
+
+.commands p{
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
