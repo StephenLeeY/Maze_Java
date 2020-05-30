@@ -1,43 +1,19 @@
 package Maze;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Custom.Tuple;
 
 public class Cell {
 	
-	private int[] edges;
-	private Tuple<Integer, Integer> location;
-	private boolean visited;
+	public List<Wall> walls;
+	public Tuple<Integer, Integer> location;
+	public boolean visited;
 
 	public Cell(Tuple<Integer, Integer> location) {
-		this.setEdges(new int[] {1, 1, 1, 1});
-		this.setLocation(location);
-		this.setVisited(false);
-	}
-	
-	// --------------
-
-	public int[] getEdges() {
-		return edges;
-	}
-
-	public void setEdges(int[] edges) {
-		this.edges = edges;
-	}
-
-	public boolean isVisited() {
-		return visited;
-	}
-
-	public void setVisited(boolean visited) {
-		this.visited = visited;
-	}
-
-	public Tuple<Integer, Integer> getLocation() {
-		return location;
-	}
-
-	public void setLocation(Tuple<Integer, Integer> location) {
+		this.walls = new ArrayList<>();
 		this.location = location;
+		this.visited = false;
 	}
-	
 }

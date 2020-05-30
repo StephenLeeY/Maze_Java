@@ -13,12 +13,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import Maze.Maze;
+
 /**
  * Class for the GUI.
  */
 public class GUI {
 
   private static REPL repl;
+  private static Maze maze;
 
   /**
    * Instructor for the GUI.
@@ -26,6 +29,9 @@ public class GUI {
    */
   public GUI(REPL r) {
     repl = r;
+    
+    maze = new Maze();
+    maze.installCommands(r);
   }
 
   /**
