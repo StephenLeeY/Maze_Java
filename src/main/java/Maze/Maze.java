@@ -82,14 +82,24 @@ public class Maze {
 			return cellList;
 		}
 		
-		private List<String> mazeToString(Cell[][] cellList) {
-			List<String> mazeString = new ArrayList<>();
+		private void mazeToString(Cell[][] cellList) {
 			int height = cellList.length;
 			int width = cellList[0].length;
 			
-			
-			
-			return mazeString;
+			for(int i = 0; i < height; i++) {
+				for(int j = 0; j < width; j++) {
+					Cell currCell = cellList[i][j];
+					String s = "";
+					for(Wall w : currCell.walls) {
+						s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-> ("
+								+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
+					}
+					if(s.length() != 0) {
+						s = s.substring(0, s.length() - 2);
+					}
+					System.out.println("Cell (" + i + ", " + j + "): [" + s + "]");
+				}
+			}
 		}
 		
 		/**
@@ -108,8 +118,8 @@ public class Maze {
 		  
 		  try {
 			  // Prim's algorithm
-			  int width = Integer.parseInt(receivedInput.get(1));
-			  int height = Integer.parseInt(receivedInput.get(2));
+			  int height = Integer.parseInt(receivedInput.get(1));
+			  int width = Integer.parseInt(receivedInput.get(2));
 			  
 			  Cell[][] cellList = new Cell[height][width];
 			  cellList = initialMaze(cellList);
@@ -135,6 +145,10 @@ public class Maze {
 					  // Mark as passage, add cell to maze, add cell's walls to wall list
 					  Cell neighborCell = randomWall.parent_two;
 					  randomWall.open = true;
+					  if(neighborCell.walls.contains(randomWall)) {
+						  neighborCell.walls.get(neighborCell.walls.indexOf(randomWall)).open = true;
+					  }
+					  neighborCell.visited = true;
 					  maze[neighborCell.location.first][neighborCell.location.second] = neighborCell;
 					  wallList.addAll(neighborCell.walls);
 				  } else {
@@ -148,8 +162,7 @@ public class Maze {
 			  }
 			  
 			  returnPrintStatement.add("Maze successfully generated!");
-			  returnPrintStatement.addAll(mazeToString(cellList));
-			  
+			  mazeToString(cellList);
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
 			  returnPrintStatement.add("Create command must take in integers for maze size parameters");
