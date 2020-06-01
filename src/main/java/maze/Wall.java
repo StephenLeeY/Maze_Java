@@ -5,6 +5,7 @@ public class Wall {
 	public Cell parent_one;
 	public Cell parent_two;
 	public boolean open;
+	public double weight;
 	
 	public Wall(Cell parent_one, Cell parent_two) {
 		this.parent_one = parent_one;

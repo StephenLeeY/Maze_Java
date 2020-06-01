@@ -2,6 +2,7 @@ package maze;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import custom.Tuple;
@@ -129,29 +130,37 @@ public class Maze {
 			  Cell[][] cellList = new Cell[height][width];
 			  cellList = initialMaze(cellList);
 			  
-			  // Pick random cell and add to maze, add walls to wall list.
+			  // Pick a random cell, add to maze
 			  Cell[][] maze = new Cell[height][width];
-			  List<Wall> wallList = new ArrayList<>();
 			  Random random = new Random();
-			  
 			  Cell randomCell = cellList[random.nextInt(height)][random.nextInt(width)];
 			  maze[randomCell.location.first][randomCell.location.second] = randomCell;
 			  randomCell.visited = true;
+			  
+			  // Add walls to queue. 
+			  PriorityQueue<Wall> wallList = new PriorityQueue<>(2, new WallComparator());
+			  // double wallWeight = 1;
+			  for(Wall w : randomCell.walls) w.weight = random.nextInt(10); //wallWeight;
 			  wallList.addAll(randomCell.walls);
 			  
 			  // While there are walls in the list
 			  while(!wallList.isEmpty()) {
 				  // Select a random wall from wall list
-				  Wall randomWall = wallList.remove(random.nextInt(wallList.size()));
+				  Wall randomWall = wallList.poll();
 				  
 				  // If only one of the wall's parent cells have been visited
 				  if(!randomWall.parent_two.visited) {
-					  // Mark as passage, add cell to maze, add cell's walls to wall list
 					  Cell neighborCell = randomWall.parent_two;
+					  // Mark wall as passage
 					  randomWall.open = true;
 					  neighborCell.walls.get(neighborCell.walls.indexOf(randomWall)).open = true;
 					  neighborCell.visited = true;
+					  // Add neighbor cell to maze
 					  maze[neighborCell.location.first][neighborCell.location.second] = neighborCell;
+					  // Adjust weight
+					  // wallWeight *= -1.01; --> Possible future maze patterns?
+					  for(Wall w : neighborCell.walls) w.weight = random.nextInt(10); // wallWeight;
+					  // Add neighbor cell's walls to queue
 					  wallList.addAll(neighborCell.walls);
 				  } else {
 					  wallList.remove(randomWall);
@@ -164,7 +173,7 @@ public class Maze {
 			  MazeUI displayClass = new MazeUI(cellList);
 			  displayClass.run();
 			  
-			  printMaze(cellList);
+			  //printMaze(cellList);
 			  
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
