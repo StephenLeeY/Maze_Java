@@ -1,9 +1,9 @@
-package Maze;
+package maze;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Custom.Tuple;
+import custom.Tuple;
 
 public class Cell {
 	

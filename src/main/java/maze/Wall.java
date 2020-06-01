@@ -1,4 +1,4 @@
-package Maze;
+package maze;
 
 public class Wall {
 
@@ -24,7 +24,8 @@ public class Wall {
         Wall compare = (Wall) o; 
           
         return compare.parent_one != null && 
-        		compare.parent_two != null && 
+        		compare.parent_two != null &&
+        		compare.parent_one != compare.parent_two &&
         		(compare.parent_one == this.parent_one || compare.parent_one == this.parent_two) &&
         		(compare.parent_two == this.parent_one || compare.parent_two == this.parent_two);
 	}

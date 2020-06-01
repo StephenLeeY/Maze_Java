@@ -2,6 +2,7 @@ package edu.brown.cs.student.main;
 
 import edu.brown.cs.student.repl.REPL;
 import freemarker.template.Configuration;
+import maze.Maze;
 import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
@@ -12,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import Maze.Maze;
 
 /**
  * Class for the GUI.

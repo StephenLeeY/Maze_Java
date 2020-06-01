@@ -1,10 +1,10 @@
-package Maze;
+package maze;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import Custom.Tuple;
+import custom.Tuple;
 import edu.brown.cs.student.repl.Command;
 import edu.brown.cs.student.repl.REPL;
 
@@ -71,8 +71,8 @@ public class Maze {
 			}
   
 			// Deal with center
-			for(int i = 2; i < height - 2; i++) {
-				for(int j = 2; j < width - 2; j++) {
+			for(int i = 1; i < height - 1; i++) {
+				for(int j = 1; j < width - 1; j++) {
 					cellList[i][j].walls.add(new Wall(cellList[i][j], cellList[i - 1][j]));
 					cellList[i][j].walls.add(new Wall(cellList[i][j], cellList[i + 1][j]));
 					cellList[i][j].walls.add(new Wall(cellList[i][j], cellList[i][j - 1]));
@@ -82,7 +82,7 @@ public class Maze {
 			return cellList;
 		}
 		
-		private void mazeToString(Cell[][] cellList) {
+		private void printMaze(Cell[][] cellList) {
 			int height = cellList.length;
 			int width = cellList[0].length;
 			
@@ -91,8 +91,13 @@ public class Maze {
 					Cell currCell = cellList[i][j];
 					String s = "";
 					for(Wall w : currCell.walls) {
-						s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-> ("
-								+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
+						if(!w.open) {
+							s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-\\-> ("
+									+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
+						} else {
+							s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-> ("
+									+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
+						}
 					}
 					if(s.length() != 0) {
 						s = s.substring(0, s.length() - 2);
@@ -162,7 +167,13 @@ public class Maze {
 			  }
 			  
 			  returnPrintStatement.add("Maze successfully generated!");
-			  mazeToString(cellList);
+			  
+			  // Draw maze
+			  MazeUI displayClass = new MazeUI(cellList);
+			  displayClass.run();
+			  
+			  printMaze(cellList);
+			  
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
 			  returnPrintStatement.add("Create command must take in integers for maze size parameters");
