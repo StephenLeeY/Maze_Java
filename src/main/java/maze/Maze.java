@@ -82,31 +82,6 @@ public class Maze {
 			return cellList;
 		}
 		
-		private void printMaze(Cell[][] cellList) {
-			int height = cellList.length;
-			int width = cellList[0].length;
-			
-			for(int i = 0; i < height; i++) {
-				for(int j = 0; j < width; j++) {
-					Cell currCell = cellList[i][j];
-					String s = "";
-					for(Wall w : currCell.walls) {
-						if(!w.open) {
-							s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-\\-> ("
-									+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
-						} else {
-							s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-> ("
-									+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
-						}
-					}
-					if(s.length() != 0) {
-						s = s.substring(0, s.length() - 2);
-					}
-					System.out.println("Cell (" + i + ", " + j + "): [" + s + "]");
-				}
-			}
-		}
-		
 		/**
 		 * Execute the create command.
 		 * @param receivedInput the parsed user input from the command line
@@ -150,9 +125,7 @@ public class Maze {
 					  // Mark as passage, add cell to maze, add cell's walls to wall list
 					  Cell neighborCell = randomWall.parent_two;
 					  randomWall.open = true;
-					  if(neighborCell.walls.contains(randomWall)) {
-						  neighborCell.walls.get(neighborCell.walls.indexOf(randomWall)).open = true;
-					  }
+					  neighborCell.walls.get(neighborCell.walls.indexOf(randomWall)).open = true;
 					  neighborCell.visited = true;
 					  maze[neighborCell.location.first][neighborCell.location.second] = neighborCell;
 					  wallList.addAll(neighborCell.walls);
@@ -172,8 +145,6 @@ public class Maze {
 			  MazeUI displayClass = new MazeUI(cellList);
 			  displayClass.run();
 			  
-			  printMaze(cellList);
-			  
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
 			  returnPrintStatement.add("Create command must take in integers for maze size parameters");
@@ -188,7 +159,13 @@ public class Maze {
 		 */
 	    @Override
 	    public boolean isCommandValid(List<String> receivedInput) {
-	      return receivedInput.size() == 3;
+	    	try {
+	    		return receivedInput.size() == 3 &&
+	    				Integer.parseInt(receivedInput.get(1)) > 1 &&
+	    				Integer.parseInt(receivedInput.get(2)) > 1;
+	    	} catch (NumberFormatException e) {
+	    		return false;
+	    	}
 	    }
 	}
 	

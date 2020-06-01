@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
@@ -30,13 +31,16 @@ public class MazeUI extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setStroke(new BasicStroke(2f));
-		
-		g2.drawString("Start", 18, 18);
-		
 		int height = this.cellList.length * 50;
 		int width = this.cellList[0].length * 50;
+		
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setStroke(new BasicStroke(2f));	
+		Font ubuntuFont = new Font("Ubuntu", Font.BOLD, 12);
+		g2.setFont(ubuntuFont);
+		
+		g2.drawString("Start", 15, 15);
+		g2.drawString("Goal", width, 33 + height);
 		
 		// Draw outline
 		g2.draw(new Line2D.Double(20, 20, 20 + width, 20));
@@ -51,13 +55,13 @@ public class MazeUI extends JPanel {
 						 int northSouth = w.parent_one.location.first - w.parent_two.location.first;
 						 int eastWest = w.parent_one.location.second - w.parent_two.location.second;
 						 // Check if north, south, east, west
-						 if(northSouth == -1) {
+						 if(northSouth == 1) {
 							 g2.draw(new Line2D.Double(20 + j * 50, 20 + i * 50, 20 + (j + 1) * 50, 20 + i * 50));
-						 } else if(northSouth == 1) {
+						 } else if(northSouth == -1) {
 							 g2.draw(new Line2D.Double(20 + j * 50, 20 + (i + 1) * 50, 20 + (j + 1) * 50, 20 + (i + 1) * 50));
-						 } else if(eastWest == 1) {
-							 g2.draw(new Line2D.Double(20 + (j + 1) * 50, 20 + i * 50, 20 + (j + 1) * 50, 20 + (i + 1) * 50));
 						 } else if(eastWest == -1) {
+							 g2.draw(new Line2D.Double(20 + (j + 1) * 50, 20 + i * 50, 20 + (j + 1) * 50, 20 + (i + 1) * 50));
+						 } else if(eastWest == 1) {
 							 g2.draw(new Line2D.Double(20 + j * 50, 20 + i * 50, 20 + j * 50, 20 + (i + 1) * 50));
 						 } else {
 							 System.out.println("MazeUI error: Wall is invalid.");
