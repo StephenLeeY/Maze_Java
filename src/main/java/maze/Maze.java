@@ -82,6 +82,31 @@ public class Maze {
 			return cellList;
 		}
 		
+		private void printMaze(Cell[][] cellList) {
+			int height = cellList.length;
+			int width = cellList[0].length;
+			
+			for(int i = 0; i < height; i++) {
+				for(int j = 0; j < width; j++) {
+					Cell currCell = cellList[i][j];
+					String s = "";
+					for(Wall w : currCell.walls) {
+						if(!w.open) {
+							s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-\\-> ("
+									+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
+						} else {
+							s += "(" + w.parent_one.location.first + ", " + w.parent_one.location.second + ") <-> ("
+									+ w.parent_two.location.first + ", " + w.parent_two.location.second + "), ";
+						}
+					}
+					if(s.length() != 0) {
+						s = s.substring(0, s.length() - 2);
+					}
+					System.out.println("Cell (" + i + ", " + j + "): [" + s + "]");
+				}
+			}
+		}
+		
 		/**
 		 * Execute the create command.
 		 * @param receivedInput the parsed user input from the command line
@@ -114,7 +139,6 @@ public class Maze {
 			  randomCell.visited = true;
 			  wallList.addAll(randomCell.walls);
 			  
-			  int counter = 0;
 			  // While there are walls in the list
 			  while(!wallList.isEmpty()) {
 				  // Select a random wall from wall list
@@ -132,11 +156,6 @@ public class Maze {
 				  } else {
 					  wallList.remove(randomWall);
 				  }
-				  
-				  if(counter++ > 100000) {
-					  returnPrintStatement.add("Infinite while loop!");
-					  return returnPrintStatement;
-				  }
 			  }
 			  
 			  returnPrintStatement.add("Maze successfully generated!");
@@ -144,6 +163,8 @@ public class Maze {
 			  // Draw maze
 			  MazeUI displayClass = new MazeUI(cellList);
 			  displayClass.run();
+			  
+			  printMaze(cellList);
 			  
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
