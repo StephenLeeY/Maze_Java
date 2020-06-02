@@ -1,15 +1,19 @@
 package maze;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.Set;
 
 import custom.Tuple;
 import edu.brown.cs.student.repl.Command;
 import edu.brown.cs.student.repl.REPL;
 
 public class Maze {
+	
+	private Cell[][] cellList;
 
 	public Maze() { }
 	
@@ -30,7 +34,7 @@ public class Maze {
 		/**
 		 * Helper function: Initializes maze with all possible walls
 		 */
-		private Cell[][] initialMaze(Cell[][] cellList) {
+		private Cell[][] initialMaze() {
 			int height = cellList.length;
 			int width = cellList[0].length;
 			
@@ -83,7 +87,7 @@ public class Maze {
 			return cellList;
 		}
 		
-		private void printMaze(Cell[][] cellList) {
+		private void printMaze() {
 			int height = cellList.length;
 			int width = cellList[0].length;
 			
@@ -127,13 +131,15 @@ public class Maze {
 			  int height = Integer.parseInt(receivedInput.get(1));
 			  int width = Integer.parseInt(receivedInput.get(2));
 			  
-			  Cell[][] cellList = new Cell[height][width];
-			  cellList = initialMaze(cellList);
+			  cellList = new Cell[height][width];
+			  cellList = initialMaze();
 			  
 			  // Pick a random cell, add to maze
 			  Cell[][] maze = new Cell[height][width];
 			  Random random = new Random();
-			  Cell randomCell = cellList[random.nextInt(height)][random.nextInt(width)];
+			  // Generating at random cell vs. generating from goal
+			  // Cell randomCell = cellList[random.nextInt(height)][random.nextInt(width)];
+			  Cell randomCell = cellList[height - 1][width - 1];
 			  maze[randomCell.location.first][randomCell.location.second] = randomCell;
 			  randomCell.visited = true;
 			  
@@ -173,7 +179,7 @@ public class Maze {
 			  MazeUI displayClass = new MazeUI(cellList);
 			  displayClass.run();
 			  
-			  //printMaze(cellList);
+			  //printMaze();
 			  
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
@@ -212,6 +218,60 @@ public class Maze {
 		@Override
 		public List<String> executeCommand(List<String> receivedInput) {
 		  List<String> returnPrintStatement = new ArrayList<>();
+		  
+		  if(!this.isCommandValid(receivedInput)) {
+			  returnPrintStatement.add("Invalid format for command: path");
+			  return returnPrintStatement;
+		  }
+		  
+		  // BFS implementation of maze solver
+		  Set<Cell> visited = new HashSet<>();
+		  PriorityQueue<List<Cell>> queue = new PriorityQueue<List<Cell>>(1, new CellComparator());  
+		  
+		  Cell start = cellList[0][0];
+		  Cell goal = cellList[cellList.length - 1][cellList[0].length - 1];
+		  
+		  // Add source cell to visited and its neighbors to unvisited.
+		  visited.add(start);
+		  for(Wall w : start.walls) {
+			  List<Cell> startNeighbor = new ArrayList<>();
+			  startNeighbor.add(start);
+			  startNeighbor.add(w.parent_two);
+			  queue.add(startNeighbor);
+		  }
+		  
+		  List<Cell> path = new ArrayList<>();
+		  // Main loop
+		  outer:
+		  while(!queue.isEmpty()) {
+			  List<Cell> queuePoll = queue.poll();
+			  Cell currCell = queuePoll.get(queuePoll.size() - 1);
+			  
+			  // Loop through neighbors of currCell
+			  for(Wall w : currCell.walls) {
+				  // If goal reached
+				  if(w.parent_two == goal) {
+					  queuePoll.add(w.parent_two);
+					  queuePoll.add(goal);
+					  path = queuePoll;
+					  break outer;
+				  }
+				  
+				  // If neighbor is not visited
+				  if(!visited.contains(w.parent_two)) {
+					  // Add neighbor to queue and mark as visited
+					  List<Cell> neighborList = new ArrayList<>();
+					  neighborList.addAll(queuePoll);
+					  neighborList.add(w.parent_two);
+					  queue.add(neighborList);
+					  visited.add(w.parent_two);
+				  }
+			  }
+		  }
+		  
+		  for(Cell c : path) {
+			  System.out.println("(" + c.location.first + ", " + c.location.second + ")");
+		  }
 		  
 		  return returnPrintStatement;
 		}

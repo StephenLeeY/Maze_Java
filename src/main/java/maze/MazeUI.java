@@ -75,7 +75,7 @@ public class MazeUI extends JPanel {
 	
 	public void run() {
 		JFrame frame = new JFrame("Maze");	
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setAlwaysOnTop(true);
