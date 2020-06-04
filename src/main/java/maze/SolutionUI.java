@@ -8,17 +8,21 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class MazeUI extends JPanel {
+public class SolutionUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private Cell[][] cellList;
+	private List<Cell> path;
 	
-	public MazeUI(Cell[][] cellList) {
+	public SolutionUI(Cell[][] cellList, List<Cell> path) {
 		this.cellList = cellList;
 		this.setBackground(Color.white);
+		this.path = path;
 	}
 	
 	@Override
@@ -69,6 +73,11 @@ public class MazeUI extends JPanel {
 					 }
 				 }
 			}
+		}
+		
+		for(Cell c : this.path) {
+			g2.setColor(new Color(0, 255, 0, 50));
+			g2.fillRect(20 + c.location.second * 50, 20 + c.location.first * 50, 50, 50);
 		}
 	}
 	

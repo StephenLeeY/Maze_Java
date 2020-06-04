@@ -29,7 +29,7 @@ public class GUI {
   public GUI(REPL r) {
     repl = r;
     
-    maze = new Maze();
+    maze = new Maze(r);
     maze.installCommands(r);
   }
 

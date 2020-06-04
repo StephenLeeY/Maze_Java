@@ -14,22 +14,24 @@ import edu.brown.cs.student.repl.REPL;
 public class Maze {
 	
 	private Cell[][] cellList;
+	public REPL mazeREPL;
 
-	public Maze() { }
+	public Maze(REPL mazeREPL) { 
+		this.mazeREPL = mazeREPL;
+	}
 	
 	/**
 	 * Method to install Maze's commands into the REPL.
 	 * @param repl the REPL of the program
 	 */
 	public void installCommands(REPL repl) {
-	  repl.register("create", new CreateCommand());
-	  repl.register("path", new PathCommand());
+	  repl.register("maze", new MazeCommand());
 	}
 	
 	/**
-	 * Private class defining the "create" command.
+	 * Private class defining the "maze" command.
 	 */
-	private class CreateCommand implements Command {
+	private class MazeCommand implements Command {
 		
 		/**
 		 * Helper function: Initializes maze with all possible walls
@@ -87,6 +89,7 @@ public class Maze {
 			return cellList;
 		}
 		
+		@SuppressWarnings("unused")
 		private void printMaze() {
 			int height = cellList.length;
 			int width = cellList[0].length;
@@ -113,6 +116,63 @@ public class Maze {
 		}
 		
 		/**
+		 * Returns a list of cells indicating the correct path in a maze.
+		 */
+		private List<Cell> solver() {
+			// BFS implementation of maze solver
+			Set<Cell> visited = new HashSet<>();
+			PriorityQueue<List<Cell>> queue = new PriorityQueue<List<Cell>>(1, new CellComparator());  
+		  
+			Cell start = cellList[0][0];
+			Cell goal = cellList[cellList.length - 1][cellList[0].length - 1];
+		  
+			// Add source cell to visited and its neighbors to unvisited.
+			visited.add(start);
+			for(Wall w : start.walls) {
+				if(w.open) {
+					List<Cell> startNeighbor = new ArrayList<>();
+					startNeighbor.add(start);
+					startNeighbor.add(w.parent_two);
+				  	queue.add(startNeighbor);
+				}
+			}
+		  
+			List<Cell> path = new ArrayList<>();
+			// Main loop
+			outer:
+				while(!queue.isEmpty()) {
+					List<Cell> queuePoll = queue.poll();
+					Cell currCell = queuePoll.get(queuePoll.size() - 1);
+			  
+					// Loop through neighbors of currCell
+					for(Wall w : currCell.walls) {
+						// If goal reached
+						if(w.parent_two == goal && w.open) {
+							queuePoll.add(goal);
+							path = queuePoll;
+							break outer;
+						}
+						
+						// If neighbor is not visited
+						if(!visited.contains(w.parent_two) && w.open) {
+							// Add neighbor to queue and mark as visited
+							List<Cell> neighborList = new ArrayList<>();
+							neighborList.addAll(queuePoll);
+							neighborList.add(w.parent_two);
+							queue.add(neighborList);
+							visited.add(w.parent_two);
+						}
+					}
+				}
+			
+//			for(Cell c : path) {
+//				System.out.println("(" + c.location.first + ", " + c.location.second + ")");
+//			}
+		  
+			return path;
+		}
+		
+		/**
 		 * Execute the create command.
 		 * @param receivedInput the parsed user input from the command line
 		 * @return a list of strings representing result of Command
@@ -122,14 +182,14 @@ public class Maze {
 		  List<String> returnPrintStatement = new ArrayList<>();
 		  
 		  if(!this.isCommandValid(receivedInput)) {
-			  returnPrintStatement.add("Invalid format for command: create");
+			  returnPrintStatement.add("Invalid format. Try: maze <create/solve> <height> <width>");
 			  return returnPrintStatement;
 		  }
 		  
 		  try {
 			  // Prim's algorithm
-			  int height = Integer.parseInt(receivedInput.get(1));
-			  int width = Integer.parseInt(receivedInput.get(2));
+			  int height = Integer.parseInt(receivedInput.get(2));
+			  int width = Integer.parseInt(receivedInput.get(3));
 			  
 			  cellList = new Cell[height][width];
 			  cellList = initialMaze();
@@ -173,117 +233,43 @@ public class Maze {
 				  }
 			  }
 			  
-			  returnPrintStatement.add("Maze successfully generated!");
+			  if(receivedInput.get(1).equalsIgnoreCase("create")) {
+				  // Draw maze
+				  returnPrintStatement.add("Maze successfully generated!");
+				  MazeUI displayClass = new MazeUI(cellList);
+				  displayClass.run();
+			  } else {
+				  // Draw solution + maze
+				  returnPrintStatement.add("Maze and solution successfully generated!");
+				  SolutionUI displayClass = new SolutionUI(cellList, solver());
+				  displayClass.run();
+			  }
 			  
-			  // Draw maze
-			  MazeUI displayClass = new MazeUI(cellList);
-			  displayClass.run();
-			  
-			  //printMaze();
+			  // printMaze();
 			  
 			  return returnPrintStatement;
 		  } catch (NumberFormatException e) {
-			  returnPrintStatement.add("Create command must take in integers for maze size parameters");
+			  returnPrintStatement.add("Invalid format. Try: maze <create/solve> <height> <width>");
 			  return returnPrintStatement;
 		  }
 		}		  
 		
 		/**
-		 * Checks that the create Command was given in the correct format.
+		 * Checks that the maze Command was given in the correct format.
 		 * @param receivedInput tokenized list of user's command
 		 * @return boolean representing if the command is of the correct format
 		 */
 	    @Override
 	    public boolean isCommandValid(List<String> receivedInput) {
 	    	try {
-	    		return receivedInput.size() == 3 &&
-	    				Integer.parseInt(receivedInput.get(1)) > 1 &&
-	    				Integer.parseInt(receivedInput.get(2)) > 1;
+	    		return receivedInput.size() == 4 &&
+	    				(receivedInput.get(1).equalsIgnoreCase("create") ||
+	    				 receivedInput.get(1).equalsIgnoreCase("solve")) &&
+	    				Integer.parseInt(receivedInput.get(2)) > 1 &&
+	    				Integer.parseInt(receivedInput.get(3)) > 1;
 	    	} catch (NumberFormatException e) {
 	    		return false;
 	    	}
-	    }
-	}
-	
-	/**
-	 * Private class defining the "path" command.
-	 */
-	private class PathCommand implements Command {
-	
-		/**
-		 * Execute the path command.
-		 * @param receivedInput the parsed user input from the command line
-		 * @return a list of strings representing result of Command
-		 */
-		@Override
-		public List<String> executeCommand(List<String> receivedInput) {
-		  List<String> returnPrintStatement = new ArrayList<>();
-		  
-		  if(!this.isCommandValid(receivedInput)) {
-			  returnPrintStatement.add("Invalid format for command: path");
-			  return returnPrintStatement;
-		  }
-		  
-		  // BFS implementation of maze solver
-		  Set<Cell> visited = new HashSet<>();
-		  PriorityQueue<List<Cell>> queue = new PriorityQueue<List<Cell>>(1, new CellComparator());  
-		  
-		  Cell start = cellList[0][0];
-		  Cell goal = cellList[cellList.length - 1][cellList[0].length - 1];
-		  
-		  // Add source cell to visited and its neighbors to unvisited.
-		  visited.add(start);
-		  for(Wall w : start.walls) {
-			  List<Cell> startNeighbor = new ArrayList<>();
-			  startNeighbor.add(start);
-			  startNeighbor.add(w.parent_two);
-			  queue.add(startNeighbor);
-		  }
-		  
-		  List<Cell> path = new ArrayList<>();
-		  // Main loop
-		  outer:
-		  while(!queue.isEmpty()) {
-			  List<Cell> queuePoll = queue.poll();
-			  Cell currCell = queuePoll.get(queuePoll.size() - 1);
-			  
-			  // Loop through neighbors of currCell
-			  for(Wall w : currCell.walls) {
-				  // If goal reached
-				  if(w.parent_two == goal) {
-					  queuePoll.add(w.parent_two);
-					  queuePoll.add(goal);
-					  path = queuePoll;
-					  break outer;
-				  }
-				  
-				  // If neighbor is not visited
-				  if(!visited.contains(w.parent_two)) {
-					  // Add neighbor to queue and mark as visited
-					  List<Cell> neighborList = new ArrayList<>();
-					  neighborList.addAll(queuePoll);
-					  neighborList.add(w.parent_two);
-					  queue.add(neighborList);
-					  visited.add(w.parent_two);
-				  }
-			  }
-		  }
-		  
-		  for(Cell c : path) {
-			  System.out.println("(" + c.location.first + ", " + c.location.second + ")");
-		  }
-		  
-		  return returnPrintStatement;
-		}
-		
-		/**
-		 * Checks that the path Command was given in the correct format.
-		 * @param receivedInput tokenized list of user's command
-		 * @return boolean representing if the command is of the correct format
-		 */
-	    @Override
-	    public boolean isCommandValid(List<String> receivedInput) {
-	      return receivedInput.size() == 1;
 	    }
 	}
 }
